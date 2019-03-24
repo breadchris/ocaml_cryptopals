@@ -1,0 +1,3 @@
+(executable
+	(name hex)
+	(libraries base stdio))

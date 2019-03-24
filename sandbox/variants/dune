@@ -1,0 +1,3 @@
+(executable
+	(name colors)
+	(libraries base stdio))
