@@ -1,0 +1,4 @@
+#directory "_build";;
+#require "oUnit";;
+#load "chals.cmo";;
+open Chals
