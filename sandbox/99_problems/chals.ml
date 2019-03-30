@@ -45,6 +45,21 @@ let rec rev l =
   | [] -> []
   | e :: tl -> rev tl @ [e]
 
+(* Chal 6: Find out whether a list is a palindrome. (easy) *)
+let is_palindrome l =
+  (* re-implement reverse here cause it is an interesting approach *)
+  let rec rev acc = function
+    | [] -> acc
+    | h :: tl -> rev (h :: acc) tl in
+  let rec equal l1 l2 =
+    match l1, l2 with
+    | [], [] -> true
+    | _, [] -> false
+    | [], _ -> false
+    | h1 :: tl1, h2 :: tl2 -> h1 = h2 && equal tl1 tl2 in
+  let rev_l = rev [] l in
+  equal l rev_l
+
 let () =
   run_test_tt_main (
     "chal_tests" >::: [
@@ -66,6 +81,10 @@ let () =
       ];
       "Tests for chal5" >::: [
         "elements"  >:: (fun _ -> assert_equal [ "c"; "b"; "a" ] (rev [ "a" ; "b"; "c" ]))
+      ];
+      "Tests for chal6" >::: [
+        "is palindrome"  >:: (fun _ -> assert_equal true (is_palindrome [ "x" ; "a"; "m"; "a"; "x" ]));
+        "is not palindrome" >:: (fun _ -> assert_equal false (is_palindrome [ "a"; "b" ]))
       ]
     ])
 
