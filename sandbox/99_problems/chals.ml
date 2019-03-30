@@ -33,6 +33,18 @@ let rec at n l =
   | 0 -> first_elem l
   | _ -> at (n - 1) (list_tail l)
 
+(* Chal 4: Find the number of elements of a list. (easy) *)
+let rec length l =
+  match l with
+  | [] -> 0
+  | _ :: tl -> 1 + length tl
+
+(* Chal 5: OCaml standard library has List.rev but we ask that you reimplement it. *)
+let rec rev l =
+  match l with
+  | [] -> []
+  | e :: tl -> rev tl @ [e]
+
 let () =
   run_test_tt_main (
     "chal_tests" >::: [
@@ -47,6 +59,13 @@ let () =
       "Tests for chal3" >::: [
         "elements"  >:: (fun _ -> assert_equal (Some "c") (at 2 [ "a" ; "b"; "c"; "d"; "e" ]));
         "one"    >:: (fun _ -> assert_equal None (at 3 ["a"]));
+      ];
+      "Tests for chal4" >::: [
+        "elements"  >:: (fun _ -> assert_equal 3 (length [ "a" ; "b"; "c" ]));
+        "empty"    >:: (fun _ -> assert_equal 0 (length []));
+      ];
+      "Tests for chal5" >::: [
+        "elements"  >:: (fun _ -> assert_equal [ "c"; "b"; "a" ] (rev [ "a" ; "b"; "c" ]))
       ]
     ])
 
