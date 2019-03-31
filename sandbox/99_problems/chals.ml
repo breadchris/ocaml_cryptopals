@@ -59,6 +59,9 @@ let is_palindrome l =
     | h1 :: tl1, h2 :: tl2 -> h1 = h2 && equal tl1 tl2 in
   let rev_l = rev [] l in
   equal l rev_l
+  
+(* Chal 7: Flatten a nested list structure. (medium) *)
+let flatten tr = tr (* TODO *)
 
 let () =
   run_test_tt_main (
