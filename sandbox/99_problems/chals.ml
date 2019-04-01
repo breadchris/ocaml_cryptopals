@@ -59,9 +59,13 @@ let is_palindrome l =
     | h1 :: tl1, h2 :: tl2 -> h1 = h2 && equal tl1 tl2 in
   let rev_l = rev [] l in
   equal l rev_l
+
+type 'a node =
+  | One of 'a
+  | Many of 'a node list
   
 (* Chal 7: Flatten a nested list structure. (medium) *)
-let flatten tr = tr (* TODO *)
+let flatten tr = 
 
 let () =
   run_test_tt_main (
@@ -88,6 +92,9 @@ let () =
       "Tests for chal6" >::: [
         "is palindrome"  >:: (fun _ -> assert_equal true (is_palindrome [ "x" ; "a"; "m"; "a"; "x" ]));
         "is not palindrome" >:: (fun _ -> assert_equal false (is_palindrome [ "a"; "b" ]))
+      ];
+      "Tests for chal7" >::: [
+        "tree"  >:: (fun _ -> assert_equal ["a"; "b"; "c"; "d"; "e"] (flatten [ "x" ; "a"; "m"; "a"; "x" ]))
       ]
     ])
 
