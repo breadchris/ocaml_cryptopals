@@ -54,20 +54,75 @@ let is_palindrome l =
   let rec equal l1 l2 =
     match l1, l2 with
     | [], [] -> true
-    | _, [] -> false
-    | [], _ -> false
+    | _, [] | [], _ -> false
     | h1 :: tl1, h2 :: tl2 -> h1 = h2 && equal tl1 tl2 in
   let rev_l = rev [] l in
   equal l rev_l
-
+  
+(* Chal 7: Flatten a nested list structure. (medium) *)
 type 'a node =
   | One of 'a
   | Many of 'a node list
-  
-(* Chal 7: Flatten a nested list structure. (medium) *)
-let flatten tr = 
 
-let () =
+let rec flatten tr = match tr with
+  | [] -> []
+  | One e :: tl -> e :: flatten tl
+  | Many e :: tl -> flatten e @ flatten tl
+
+(* Alternative solution to this challenge
+let flatten_alt l =
+  let rec aux acc = function
+  | [] -> acc
+  | One x :: t -> aux (x :: acc) t
+  | Many x :: t -> aux (aux acc x) t in
+  List.rev (aux [] l)
+*)
+
+(* Chal 8: Eliminate consecutive duplicates of list elements. *)
+let compress l =
+  let rec compress' prev l' =
+    match l' with
+    | [] -> []
+    | e :: tl ->
+      if e <> prev then e :: (compress' e tl)
+      else compress' prev tl
+  in
+  match l with
+  | [] -> []
+  | e :: tl -> e :: compress' e tl
+
+(* Alternative
+let rec compress_alt = function
+  | a :: (b :: t) -> if a = b then compress t else a :: compress t
+  | smaller -> smaller
+*)
+
+(* Chal 9: Pack consecutive duplicates of list elements into sublists. (medium) *)
+let pack list =
+  let rec pack' prev l cur =
+    match l with
+    | [] -> [cur]
+    | e :: tl -> 
+      if e = prev then pack' prev tl (e :: cur)
+      else cur :: pack' e tl [e]
+  in
+  match list with
+  | [] -> []
+  | e :: tl -> pack' e tl [e]
+
+(*
+let pack_alt list =
+  let rec aux current acc = function
+    | [] -> []
+    | [x] -> (x :: current) :: acc
+    | a :: (b :: tl) ->
+      if a = b then aux (a :: current) acc tl
+      else aux [] (current :: acc) tl in
+  List.rev (aux [] [] list)
+*)
+
+let test run =
+  if not run then () else
   run_test_tt_main (
     "chal_tests" >::: [
       "Tests for chal1" >::: [
@@ -94,7 +149,15 @@ let () =
         "is not palindrome" >:: (fun _ -> assert_equal false (is_palindrome [ "a"; "b" ]))
       ];
       "Tests for chal7" >::: [
-        "tree"  >:: (fun _ -> assert_equal ["a"; "b"; "c"; "d"; "e"] (flatten [ "x" ; "a"; "m"; "a"; "x" ]))
+        "tree"  >:: (fun _ -> assert_equal ["a"; "b"; "c"; "d"; "e"] (flatten [ One "a"; Many [ One "b"; Many [ One "c"; One "d" ]; One "e" ]]))
+      ];
+      "Tests for chal8" >::: [
+        "repeats"  >:: (fun _ -> assert_equal ["a";"b";"c";"a";"d";"e"] (compress  ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"];))
       ]
+      (* TODO: Implement a recursive compare
+      "Tests for chal9" >::: [
+        "some elements"  >:: (fun _ -> assert_equal [["a"; "a"; "a"; "a"]; ["b"]; ["c"; "c"]; ["a"; "a"]; ["d"; "d"];
+ ["e"; "e"; "e"; "e"]] (pack  ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"d";"e";"e";"e";"e"]))
+      ]
+      *)
     ])
-
