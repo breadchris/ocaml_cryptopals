@@ -121,6 +121,30 @@ let pack_alt list =
   List.rev (aux [] [] list)
 *)
 
+(* Chal 10: Run-length encoding of a list. (easy) *)
+let encode list =
+  let rec encode' n cur run l = 
+    let pair = (n, cur) in
+    match l with
+    | [] -> pair :: run
+    | e :: tl ->
+      if e = cur then encode' (n + 1) cur run tl
+      else encode' 1 e (pair :: run) tl in
+  match list with
+  | [] -> []
+  | e :: tl -> List.rev (encode' 1 e [] tl)
+
+(*
+let encode_alt list =
+  let rec encode' count acc = function
+  | [] -> []
+  | [x] -> (count + 1, x) :: acc
+  | a :: (b :: _ as tl) ->
+    if a = b then encode' (count + 1) acc tl
+    else encode' 0 ((count + 1, x) :: acc) tl in
+  List.rev (encode' 0 [] list)
+*)
+
 let test run =
   if not run then () else
   run_test_tt_main (
@@ -153,11 +177,15 @@ let test run =
       ];
       "Tests for chal8" >::: [
         "repeats"  >:: (fun _ -> assert_equal ["a";"b";"c";"a";"d";"e"] (compress  ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"];))
-      ]
+      ];
       (* TODO: Implement a recursive compare
       "Tests for chal9" >::: [
         "some elements"  >:: (fun _ -> assert_equal [["a"; "a"; "a"; "a"]; ["b"]; ["c"; "c"]; ["a"; "a"]; ["d"; "d"];
  ["e"; "e"; "e"; "e"]] (pack  ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"d";"e";"e";"e";"e"]))
       ]
       *)
+      "Tests for chal10" >::: [
+        "encode"  >:: (fun _ -> assert_equal [(4, "a"); (1, "b"); (2, "c"); (2, "a"); (1, "d"); (4, "e")] (encode ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"])
+ )
+      ]
     ])
