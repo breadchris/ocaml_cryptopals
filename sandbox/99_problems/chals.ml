@@ -144,11 +144,61 @@ let encode_alt list =
     else encode' 0 ((count + 1, x) :: acc) tl in
   List.rev (encode' 0 [] list)
 *)
+type 'a rle =
+  | One of 'a
+  | Many of int * 'a
+
+(* Chal 11: Modified run-length encoding. (easy) *)
+let mod_encode list =
+  let get_type count e =
+    match count with
+    | 1 -> One e
+    | _ -> Many (count, e) in
+  let rec mod_encode' count acc = function
+    | [] -> acc
+    | [e] -> (One e) :: acc
+    | a :: (b :: _ as tl) -> 
+      if a = b then mod_encode' (count + 1) acc tl
+      else mod_encode' 0 ((get_type (count+1) a)::acc) tl in
+    List.rev (mod_encode' 0 [] list)
+
+(* Chal 12: Decode a run-length encoded list. (medium) *)
+let decode list =
+  let rec append_nchars n c acc =
+    match n with
+    | 0 -> acc
+    | _ -> append_nchars (n-1) c (c::acc)
+  in
+  let rec decode' acc list =
+    match list with
+    | [] -> acc
+    | Many(n, c)::tl -> decode' (append_nchars n c acc) tl
+    | One(c)::tl -> decode' (c::acc) tl
+  in 
+  decode' [] (List.rev list)
+
+let decode_forward list =
+  let rec nchars n c acc =
+    match n with
+    | 0 -> acc
+    | _ -> nchars (n-1) c (c::acc)
+  in
+  let rec decode' list =
+    match list with
+    | [] -> []
+    | Many(n,c)::tl -> nchars n c (decode' tl)
+    | One(c)::tl -> c::(decode' tl)
+  in 
+  decode' list
 
 (* Chal 13: Run-length encoding of a list (direct solution). (medium) *)
 let run_len_encode x = x
 
-let test run =
+let test run = true
+
+let run = true
+
+let () =
   if not run then () else
   run_test_tt_main (
     "chal_tests" >::: [
@@ -190,5 +240,12 @@ let test run =
       "Tests for chal10" >::: [
         "encode"  >:: (fun _ -> assert_equal [(4, "a"); (1, "b"); (2, "c"); (2, "a"); (1, "d"); (4, "e")] (encode ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"])
  )
+      ];
+      "Tests for chal11" >::: [
+        "encode mod"  >:: (fun _ -> assert_equal [Many (4, "a"); One "b"; Many (2, "c"); Many (2, "a"); One "d";
+ Many (4, "e")] (mod_encode ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"]))
+      ];
+      "Tests for chal12" >::: [
+        "encode mod"  >:: (fun _ -> assert_equal ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"] (decode [Many (4,"a"); One "b"; Many (2,"c"); Many (2,"a"); One "d"; Many (4,"e")]))
       ]
     ])
