@@ -145,6 +145,9 @@ let encode_alt list =
   List.rev (encode' 0 [] list)
 *)
 
+(* Chal 13: Run-length encoding of a list (direct solution). (medium) *)
+let run_len_encode x = x
+
 let test run =
   if not run then () else
   run_test_tt_main (
