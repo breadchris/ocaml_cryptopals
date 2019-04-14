@@ -159,7 +159,7 @@ let mod_encode list =
     | [e] -> (One e) :: acc
     | a :: (b :: _ as tl) -> 
       if a = b then mod_encode' (count + 1) acc tl
-      else mod_encode' 0 ((get_type (count+1) a)::acc) tl in
+      else mod_encode' 0 ((get_type (count + 1) a)::acc) tl in
     List.rev (mod_encode' 0 [] list)
 
 (* Chal 12: Decode a run-length encoded list. (medium) *)
@@ -192,9 +192,15 @@ let decode_forward list =
   decode' list
 
 (* Chal 13: Run-length encoding of a list (direct solution). (medium) *)
-let run_len_encode x = x
-
-let test run = true
+let run_len_encode list =
+  let get_type n x = if n = 0 then One x else Many (n + 1, x) in
+  let rec run_len_encode' count acc = function
+    | [] -> []
+    | [x] ->(get_type count x)::acc
+    | a :: (b :: _ as tl) ->
+      if a = b then run_len_encode' (count + 1) acc tl
+      else run_len_encode' 0 (get_type count a::acc) tl in
+  List.rev (run_len_encode' 0 [] list)
 
 let run = true
 
