@@ -67,6 +67,21 @@ end)
 
 module String_interval = Make_interval(String);;
 
+
+module type S = sig 
+    type 'a t 
+    val fold : 'a t -> init:'acc -> f:('acc -> 'a -> 'acc) -> 'acc
+end
+
+module type Extension = sig 
+    type 'a t 
+    val iter    : 'a t -> f:('a -> unit) -> unit
+    val length  : 'a t -> int
+    val count   : 'a t -> f:('a -> bool) -> int
+    val for_all : 'a t -> f:('a -> bool) -> bool
+    val exists  : 'a t -> f:('a -> bool) -> bool
+end
+
 type 'a t = 'a list * 'a list
 
 let empty = ([], [])

@@ -202,7 +202,42 @@ let run_len_encode list =
       else run_len_encode' 0 (get_type count a::acc) tl in
   List.rev (run_len_encode' 0 [] list)
 
-let run = true
+(* Chal 14: Duplicate the elements of a list. *)
+let duplicate list =
+  let rec aux acc = function
+    | [] -> acc
+    | e :: tl -> aux (List.append acc [e;e]) tl in
+  aux [] list
+
+let rec duplicate_alt = function
+  | [] -> []
+  | e :: tl -> e :: e :: duplicate_alt tl
+
+(* Chal 15: Replicate the elements of a list a given number of times. (medium) *)
+let replicate list count =
+  let rec append' l e = function
+    | 0 -> l
+    | c -> append' (e :: l) e (c - 1) in
+  let rec aux' acc count  = function
+  | [] -> acc
+  | e :: tl -> aux' (append' acc e count) count tl in
+  aux' [] count (List.rev list)
+
+(* Chal 16: Drop every N'th element from a list. (medium) *)
+let drop list count =
+  let rec aux' i = function
+  | [] -> []
+  | x :: tl ->
+    if i <= 1 then aux' count tl
+    else x :: aux' (i - 1) tl in
+  aux' count list
+
+(* Chal 17: Split a list into two parts; the length of the first part is given. (easy) *)
+let split list count = function
+  | [] -> []
+  | _ -> []
+
+let run = false
 
 let () =
   if not run then () else
