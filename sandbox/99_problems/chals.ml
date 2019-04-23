@@ -233,9 +233,13 @@ let drop list count =
   aux' count list
 
 (* Chal 17: Split a list into two parts; the length of the first part is given. (easy) *)
-let split list count = function
-  | [] -> []
-  | _ -> []
+let rec split list count =
+  match list with
+  | [] -> ([], list)
+  | e :: tl ->
+    if count = 0 then ([], list) else
+    let l1, l2 = split tl (count - 1) in (e :: l1, l2)
+    
 
 let run = false
 
