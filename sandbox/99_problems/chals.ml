@@ -239,7 +239,19 @@ let rec split list count =
   | e :: tl ->
     if count = 0 then ([], list) else
     let l1, l2 = split tl (count - 1) in (e :: l1, l2)
-    
+
+(* Chal 18: Extract a slice from a list. (medium) *)
+let slice list i k =
+  let rec slice' acc i k = function
+    | [] -> acc
+    | e :: tl ->
+      if i > 0 then slice' acc (i - 1) (k - 1) tl
+      else if k > 0 then slice' (e :: acc) 0 (k - 1) tl
+      else acc in
+  List.rev (slice' [] i k list)
+
+(* Chal 19: Rotate a list N places to the left. (medium) *)
+let rotate list n = 0
 
 let run = false
 
