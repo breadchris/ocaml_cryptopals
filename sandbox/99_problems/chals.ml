@@ -251,7 +251,17 @@ let slice list i k =
   List.rev (slice' [] i k list)
 
 (* Chal 19: Rotate a list N places to the left. (medium) *)
-let rotate list n = 0
+let rotate list n =
+  let c = if n < 0 then n + (List.length list)
+            else n 
+  in
+  let rec rotate' acc n = function
+    | [] -> acc
+    | (e :: tl as l) ->
+      if n > 0 then rotate' (e :: acc) (n - 1) tl
+      else List.append l (List.rev acc)
+  in
+  rotate' [] c list
 
 let run = false
 
