@@ -263,6 +263,24 @@ let rotate list n =
   in
   rotate' [] c list
 
+(* Chal 20: Remove the K'th element from a list. (easy) *)
+let rec remove_at i l =
+  match l with
+  | [] -> []
+  | e :: tl ->
+    if i = 0 then remove_at (i - 1) tl
+    else e :: (remove_at (i - 1) tl)
+
+(* Chal 21: Insert an element at a given position into a list. (easy) *)
+let rec insert_at elem idx l =
+  match l with
+  | [] -> [elem]
+  | e :: tl ->
+    if idx = 0 then elem :: tl
+    else e :: (insert_at elem (idx - 1) tl)
+
+(* Chal 22: Create a list containing all integers within a given range. (easy) *)
+
 let run = false
 
 let () =
