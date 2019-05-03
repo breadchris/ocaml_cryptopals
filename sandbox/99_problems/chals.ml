@@ -280,6 +280,15 @@ let rec insert_at elem idx l =
     else e :: (insert_at elem (idx - 1) tl)
 
 (* Chal 22: Create a list containing all integers within a given range. (easy) *)
+let rec range start' end' l = 
+  match l with
+  | [] -> []
+  | e :: tl ->
+    if start' >= 0 then range (start' - 1) end' tl
+    else if end' >= 0 then e :: (range start' (end' - 1) tl)
+    else []
+
+(* Chal 23: Extract a given number of randomly selected elements from a list. (medium) *)
 
 let run = false
 
