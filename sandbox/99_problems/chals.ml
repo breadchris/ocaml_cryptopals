@@ -290,6 +290,21 @@ let rec range start' end' l =
 
 (* Chal 23: Extract a given number of randomly selected elements from a list. (medium) *)
 
+exception Nth_not_found
+
+let rec rand_select l n =
+  let list_len = List.length l in
+  let rec get_nth i l =
+    match l with
+    | [] -> raise Nth_not_found
+    | e :: tl ->
+      if i = 0 then e
+      else get_nth (i - 1) tl
+  in
+  match n with
+  | 0 -> []
+  | _ -> (get_nth (Random.int list_len)) :: (rand_select l (n - 1))
+
 let run = false
 
 let () =
