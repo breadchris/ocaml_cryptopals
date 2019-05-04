@@ -303,7 +303,7 @@ let rec rand_select l n =
   in
   match n with
   | 0 -> []
-  | _ -> (get_nth (Random.int list_len)) :: (rand_select l (n - 1))
+  | _ -> (get_nth (Random.int list_len) l) :: (rand_select l (n - 1))
 
 let run = false
 
