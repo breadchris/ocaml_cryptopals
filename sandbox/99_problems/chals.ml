@@ -280,13 +280,15 @@ let rec insert_at elem idx l =
     else e :: (insert_at elem (idx - 1) tl)
 
 (* Chal 22: Create a list containing all integers within a given range. (easy) *)
-let rec range start' end' l = 
-  match l with
-  | [] -> []
-  | e :: tl ->
-    if start' >= 0 then range (start' - 1) end' tl
-    else if end' >= 0 then e :: (range start' (end' - 1) tl)
-    else []
+let rec range start' end' =
+  let direction = 
+    if start' = end' then 0
+    else if start' > end' then -1
+    else 1
+  in
+  match direction with
+  | 0 -> []
+  | _ -> start' :: (range (start' + direction) end')
 
 (* Chal 23: Extract a given number of randomly selected elements from a list. (medium) *)
 
@@ -300,6 +302,24 @@ let rec rand_select l n =
     | e :: tl ->
       if i = 0 then e
       else get_nth (i - 1) tl
+  in
+  match n with
+  | 0 -> []
+  | _ -> (get_nth (Random.int list_len) l) :: (rand_select l (n - 1))
+
+(* Chal 24: Lotto: Draw N different random numbers from the set 1..M. (easy) *)
+let rec lotto_select count bound = rand_select (range 1 bound) count
+
+(* Chal 25: Generate a random permutation of the elements of a list. (easy) *)
+let permutation l =
+  let list_len = List.length l in
+  let rec remove_nth acc n e' l =
+    match l with
+    | [] -> e', acc
+    | e :: tl ->
+      if n = 0 then remove_nth acc (-1) e tl
+      else
+        let remove_nth (e :: acc) (n - 1) e' tl
   in
   match n with
   | 0 -> []
