@@ -1,4 +1,6 @@
+#require "core"
 open OUnit2
+open Base
 
 (* Chal 1: Write a function last : 'a list -> 'a option that returns the last element of a list. (easy) *)
 let rec last l = 
@@ -311,19 +313,37 @@ let rec rand_select l n =
 let rec lotto_select count bound = rand_select (range 1 bound) count
 
 (* Chal 25: Generate a random permutation of the elements of a list. (easy) *)
-let permutation l =
-  let list_len = List.length l in
-  let rec remove_nth acc n e' l =
-    match l with
-    | [] -> e', acc
-    | e :: tl ->
-      if n = 0 then remove_nth acc (-1) e tl
-      else
-        let remove_nth (e :: acc) (n - 1) e' tl
+let rec permutation l =
+  let rec extract acc n = function
+    | [] -> raise Not_found
+    | h :: t -> if n = 0 then (h, acc @ t) else extract (h :: acc) (n -1) t
   in
-  match n with
-  | 0 -> []
-  | _ -> (get_nth (Random.int list_len) l) :: (rand_select l (n - 1))
+  let extract_rand l len =
+    extract [] (Random.int len) l
+  in
+  let rec aux acc l len =
+    if len = 0 then acc else
+      let picked, rest = extract_rand l len in
+      aux (picked :: acc) rest (len - 1)
+  in
+  aux [] l (List.length l)
+
+(* Chal 26: Generate the combinations of K distinct objects chosen from the N elements of a list. (medium) *)
+let extract n l =
+  let rec join e len acc = function
+    | [] -> []
+    | h :: tl ->
+      let len' = len - 1
+      in if len = 0 then acc
+      else join e len' (e :: (join h len' acc tl)) tl
+  in
+  let rec perm e len acc = function
+    | [] -> acc
+    | h :: tl ->
+      if len = 0 then acc
+      else perm h (len - 1) (e :: acc)
+  in
+  perm e rest
 
 let run = false
 
